@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>InstaSave – Instagram Reels, Video and Photo Downloader</title>
+<meta name="description" content="Paste an Instagram link and save public reels, videos, photos or audio to your device. Free, no app, no login.">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&display=swap">
+<style>
+:root{--ink:#1a1333;--paper:#faf8ff;--soft:#ede7f9;--line:#d9d0ee;--accent:#c2185b;--accent-ink:#fff;--muted:#5d5478;--err:#b3261e;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--ink:#f1ecff;--paper:#150f29;--soft:#221a3d;--line:#3a2f5e;--accent:#ff5c9a;--accent-ink:#1a0a14;--muted:#b4a9d6;--err:#ff8a80;color-scheme:dark}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font:400 17px/1.6 "Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+a{color:inherit}
+.wrap{max-width:880px;margin:0 auto;padding:0 20px}
+header .wrap{display:flex;align-items:center;justify-content:space-between;padding-top:20px;padding-bottom:20px}
+.logo{font-weight:800;font-size:22px;letter-spacing:-.02em;text-decoration:none}
+.logo i{font-style:normal;color:var(--accent)}
+nav a{margin-left:18px;text-decoration:none;color:var(--muted);font-size:15px}
+nav a:hover{color:var(--ink)}
+h1{font-size:clamp(38px,8vw,68px);line-height:1.02;letter-spacing:-.035em;font-weight:800;margin:40px 0 16px;max-width:14ch}
+.lead{color:var(--muted);max-width:52ch;margin:0 0 28px}
+.tabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+.tabs button{font:inherit;font-size:15px;border:1px solid var(--line);background:transparent;color:var(--ink);padding:6px 16px;border-radius:99px;cursor:pointer}
+.tabs button[aria-selected=true]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.bar{display:flex;gap:8px;background:var(--soft);border:2px solid var(--line);border-radius:20px;padding:8px}
+.bar:focus-within{border-color:var(--accent)}
+.bar.bad{border-color:var(--err)}
+.bar input{flex:1;min-width:0;border:0;background:transparent;font:inherit;color:var(--ink);padding:12px;outline:none}
+.bar input::placeholder{color:var(--muted)}
+.btn{font:inherit;font-weight:600;border:0;border-radius:14px;padding:12px 20px;cursor:pointer;background:var(--accent);color:var(--accent-ink)}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+button:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+#status{min-height:1.6em;margin:12px 4px 0;font-size:15px;color:var(--muted)}
+#status.err{color:var(--err)}
+#result{margin-top:16px;display:flex;gap:16px;border:1px solid var(--line);border-radius:20px;padding:16px;background:var(--soft)}
+#result[hidden]{display:none}
+#result img{width:110px;height:140px;object-fit:cover;border-radius:12px;background:var(--line)}
+#result h3{margin:0 0 10px;font-size:18px}
+#result .dl{display:flex;gap:8px;flex-wrap:wrap}
+#result .dl a{text-decoration:none}
+section{padding:56px 0 0}
+h2{font-size:clamp(24px,4.5vw,34px);letter-spacing:-.025em;margin:0 0 16px;line-height:1.15}
+ol.steps{padding:0;margin:0;list-style:none;display:grid;gap:12px;counter-reset:s}
+ol.steps li{counter-increment:s;display:flex;gap:14px;align-items:baseline}
+ol.steps li::before{content:counter(s);font-weight:800;color:var(--accent);min-width:1.2em}
+ul.feat{margin:0;padding-left:1.2em;display:grid;gap:8px}
+details{border-top:1px solid var(--line);padding:14px 0}
+details:last-of-type{border-bottom:1px solid var(--line)}
+summary{cursor:pointer;font-weight:600;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";float:right;color:var(--accent);font-weight:800}
+details[open] summary::after{content:"–"}
+details p{margin:10px 0 0;color:var(--muted)}
+footer{margin-top:72px;border-top:1px solid var(--line);padding:28px 0 40px;color:var(--muted);font-size:14px}
+footer nav a{margin:0 16px 0 0}
+@media (max-width:520px){.bar{flex-wrap:wrap}.bar input{flex-basis:100%}.bar .btn{flex:1}#result{flex-direction:column}#result img{width:100%;height:200px}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <a class="logo" href="/">Insta<i>Save</i></a>
+  <nav aria-label="Main"><a href="#how">How it works</a><a href="#faq">FAQ</a></nav>
+</div></header>
+
+<main class="wrap">
+  <h1>Save Instagram reels in seconds.</h1>
+  <p class="lead">Paste a public reel, video or photo link. Download it to your phone or computer in the original quality. No app, no login.</p>
+
+  <div class="tabs" role="tablist" aria-label="Download type">
+    <button role="tab" aria-selected="true" data-mode="video">Video</button>
+    <button role="tab" aria-selected="false" data-mode="photo">Photo</button>
+    <button role="tab" aria-selected="false" data-mode="audio">Audio</button>
+  </div>
+
+  <form id="form" novalidate>
+    <div class="bar" id="bar">
+      <input id="link" type="text" inputmode="url" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="Paste Instagram link here" aria-label="Instagram link">
+      <button class="btn ghost" type="button" id="paste">Paste link</button>
+      <button class="btn" type="submit">Download</button>
+    </div>
+  </form>
+  <div id="status" role="status" aria-live="polite"></div>
+  <div id="result" hidden></div>
+
+  <section id="how">
+    <h2>How to download a reel</h2>
+    <ol class="steps">
+      <li>Open the reel in Instagram, tap Share, then Copy link.</li>
+      <li>Paste the link above. InstaSave starts fetching right away.</li>
+      <li>Pick MP4, JPG or MP3 and tap the download button.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Why InstaSave</h2>
+    <ul class="feat">
+      <li>Original quality, up to Full HD, with no watermark added.</li>
+      <li>Works in any browser on Android, iPhone, Windows and Mac.</li>
+      <li>Save the same post as MP4 video, JPG photo or MP3 audio.</li>
+      <li>Free to use. You never share your Instagram password.</li>
+    </ul>
+  </section>
+
+  <section id="faq">
+    <h2>Questions</h2>
+    <details><summary>Is InstaSave free?</summary><p>Yes. There is no subscription and no limit on downloads.</p></details>
+    <details><summary>Can I download from private accounts?</summary><p>No. InstaSave only works with public posts.</p></details>
+    <details><summary>Do you store my downloads?</summary><p>No. Files are fetched when you ask and are not kept on our servers.</p></details>
+    <details><summary>Where do the files go?</summary><p>Into your Downloads folder. On many phones they also appear in Gallery or Photos.</p></details>
+    <details><summary>Can I reuse what I download?</summary><p>Only with the creator’s permission. Downloads are for personal, offline viewing, not commercial use.</p></details>
+  </section>
+</main>
+
+<footer><div class="wrap">
+  <nav aria-label="Legal"><a href="/privacy">Privacy Policy</a><a href="/terms">Terms of Service</a><a href="/contact">Contact</a></nav>
+  <p>InstaSave is not affiliated with or endorsed by Instagram or Meta. We do not host files; all content belongs to its original owners. Please don’t use this tool for copyrighted or restricted content. To report infringement, contact us and we will respond under the DMCA.</p>
+  <p>© 2026 InstaSave</p>
+</div></footer>
+
+<script>
+// Set this to your backend endpoint. It receives POST {url, mode} and must return:
+// {title, thumbnail, downloads:[{label:"MP4 1080p", url:"https://..."}]}
+const API_URL = "/api/download";
+
+const IG = /https?:\/\/(?:www\.)?instagram\.com\/(?:reels?|p|tv)\/[\w-]+[^\s]*/i;
+const $ = s => document.querySelector(s);
+const input = $("#link"), bar = $("#bar"), statusEl = $("#status"), result = $("#result");
+let mode = "video";
+
+function say(msg, kind){ statusEl.textContent = msg; statusEl.className = kind || ""; }
+
+document.querySelectorAll(".tabs button").forEach(b => b.addEventListener("click", () => {
+  mode = b.dataset.mode;
+  document.querySelectorAll(".tabs button").forEach(x => x.setAttribute("aria-selected", x === b));
+}));
+
+async function run(raw){
+  const m = raw.match(IG);
+  bar.classList.toggle("bad", !m && raw.trim() !== "");
+  if(!m){
+    say(raw.trim() ? "That isn’t an Instagram link. Copy it from the Share menu and try again." : "Paste an Instagram link first.", "err");
+    return;
+  }
+  if(!API_URL){ say("Backend not connected. Set API_URL in index.html to your download endpoint.", "err"); return; }
+  say("Fetching your download…");
+  result.hidden = true;
+  try{
+    const r = await fetch(API_URL, {method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({url:m[0], mode})});
+    if(!r.ok) throw new Error(r.status);
+    render(await r.json());
+    say("");
+    input.value = "";
+  }catch(e){
+    say("Couldn’t download this link. The post may be private or removed.", "err");
+  }
+}
+
+function render(d){
+  result.replaceChildren();
+  if(typeof d.thumbnail === "string" && d.thumbnail.startsWith("https://")){
+    const img = document.createElement("img");
+    img.referrerPolicy = "no-referrer"; img.src = d.thumbnail; img.alt = ""; result.append(img);
+  }
+  const box = document.createElement("div");
+  const h = document.createElement("h3");
+  h.textContent = d.title || "Your download is ready";
+  const row = document.createElement("div");
+  row.className = "dl";
+  (d.downloads || []).forEach(x => {
+    if(typeof x.url !== "string" || !x.url.startsWith("/api/file")) return;
+    const a = document.createElement("a");
+    a.className = "btn"; a.href = x.url; a.download = ""; a.rel = "noopener";
+    a.textContent = "Download " + x.label;
+    row.append(a);
+  });
+  box.append(h, row); result.append(box);
+  result.hidden = false;
+}
+
+$("#form").addEventListener("submit", e => { e.preventDefault(); run(input.value); });
+input.addEventListener("paste", () => setTimeout(() => run(input.value), 0));
+input.addEventListener("input", () => bar.classList.remove("bad"));
+$("#paste").addEventListener("click", async () => {
+  try{ input.value = await navigator.clipboard.readText(); run(input.value); }
+  catch(e){ say("Allow clipboard access, or paste the link with Ctrl+V.", "err"); }
+});
+</script>
+</body>
+</html>
